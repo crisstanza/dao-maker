@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="xml-parser" basedir="." default="make">
+
+	<target name="clean">
+		<delete dir="classes" />
+	</target>
+
+	<target name="make" depends="clean">
+		<mkdir dir="classes" />
+		<javac includeantruntime="false" debug="true" srcdir="src" destdir="classes" />
+	</target>
+
+	<target name="run" depends="make">
+		<java classname="main.Main" fork="false">
+			<!-- <arg value="" /> -->
+			<classpath>
+				<pathelement path="."/>
+				<pathelement path="classes"/>
+			</classpath>
+		</java>
+	</target>
+
+</project>
