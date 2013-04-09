@@ -15,8 +15,9 @@
 		<java classname="main.Main" fork="false">
 			<!-- <arg value="" /> -->
 			<classpath>
-				<pathelement path="."/>
 				<pathelement path="classes"/>
+				<pathelement location="lib/postgresql-9.2-1002.jdbc4.jar"/>
+				<pathelement path="."/>
 			</classpath>
 		</java>
 	</target>

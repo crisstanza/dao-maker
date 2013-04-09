@@ -3,7 +3,6 @@ package main;
 import java.util.List;
 
 import model.Table;
-
 import dao.DAO;
 
 public final class Main {
@@ -19,7 +18,7 @@ public final class Main {
 	private final void go() throws Exception {
 		final List<Table> tables = DAO.getTables();
 
-		System.out.println( tables );
+		System.out.println(tables);
 
 	}
 

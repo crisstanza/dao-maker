@@ -25,7 +25,12 @@ public final class Table {
 	}
 
 	public final String toString() {
-		return name;
+		final StringBuilder sb = new StringBuilder();
+		sb.append("\n" + name + "\n");
+		for (Column column : columns) {
+			sb.append("	" + column + "\n");
+		}
+		return sb.toString();
 	}
 
 }
