@@ -34,4 +34,8 @@ public final class Config {
 		return rb.getString("folder-out");
 	}
 
+	public final String getDefaultPackage() {
+		return rb.getString("default-package");
+	}
+
 }

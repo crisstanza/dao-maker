@@ -2,8 +2,10 @@ package main;
 
 import java.util.List;
 
-import model.Table;
 import dao.DAO;
+import model.Table;
+
+import maker.Maker;
 
 public final class Main {
 
@@ -17,9 +19,11 @@ public final class Main {
 
 	private final void go() throws Exception {
 		final List<Table> tables = DAO.getTables();
-
-		System.out.println(tables);
-
+		final Maker maker = new Maker();
+		maker.go(tables);
+		//
+		System.out.println("Tabelas: " + tables.size());
+		//
 	}
 
 }
