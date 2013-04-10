@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +19,30 @@ public final class DAO {
 	private DAO() {
 	}
 
-	public static final Connection getConnection() throws Exception {
+	private static final Connection getConnection() throws Exception {
 		final Config config = Config.getInstance();
 		Class.forName(config.getDbDriver());
 		return DriverManager.getConnection(config.getDbUrl(), config.getDbUser(), config.getDbPass());
+	}
+
+	public static final List<Table> mockTables() throws Exception {
+		final List<Table> tables = new ArrayList<Table>();
+		final Table table = new Table();
+		table.setName("categoria");
+		table.setColumns(DAO.mockColumns());
+		tables.add(table);
+		return tables;
+	}
+
+	public static final List<Column> mockColumns() throws Exception {
+		final List<Column> columns = new ArrayList<Column>();
+		final Column column = new Column();
+		column.setName("id");
+		column.setType(Types.INTEGER);
+		column.setTypeName("INTEGER");
+		column.setClassName("int");
+		columns.add(column);
+		return columns;
 	}
 
 	public static final List<Table> getTables() throws Exception {

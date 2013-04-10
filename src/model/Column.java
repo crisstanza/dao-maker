@@ -5,6 +5,7 @@ public final class Column {
 	private String name;
 	private int type;
 	private String typeName;
+	private String className;
 
 	public final void setName(final String name) {
 		this.name = name;
@@ -28,6 +29,14 @@ public final class Column {
 
 	public final String getTypeName() {
 		return this.typeName;
+	}
+
+	public final void setClassName(final String className) {
+		this.className = className;
+	}
+
+	public final String getClassName() {
+		return this.className;
 	}
 
 	public final String toString() {

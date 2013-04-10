@@ -2,21 +2,27 @@ package maker;
 
 import java.util.List;
 
-import config.Config;
 import model.Table;
 
 public final class Maker {
 
-	private final Config config;
-
-	public Maker() {
-		config = Config.getInstance();
+	public final void go(final List<Table> tables) throws Exception {
+		goBeans(tables);
+		goDAOs(tables);
 	}
 
-	public final void go(final List<Table> tables) throws Exception {
+	private final void goBeans(final List<Table> tables) throws Exception {
+		final BeanMaker beanMaker = new BeanMaker();
+		for ( Table table : tables ) {
+			beanMaker.go(table);
+		}
+	}
 
-		System.out.println(tables);
-
+	private final void goDAOs(final List<Table> tables) throws Exception {
+		final DAOMaker daoMaker = new DAOMaker();
+		for ( Table table : tables ) {
+			daoMaker.go(table);
+		}
 	}
 
 }
