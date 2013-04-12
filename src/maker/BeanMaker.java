@@ -34,15 +34,15 @@ public final class BeanMaker {
 		bw.write("public final class " + SrcUtils.getJavaClassName(table.getName()) + " {"+ _N);
 		bw.write(_N);
 		for ( Column column : table.getColumns() ) {
-			bw.write("	private " + column.getClassName() + " " + column.getName() + ";" + _N);
+			bw.write("	private " + SrcUtils.getSimpleName(column.getClassName()) + " " + column.getName() + ";" + _N);
 		}
 		bw.write(_N);
 		for ( Column column : table.getColumns() ) {
-			bw.write("	public final void " + SrcUtils.getJavaSetterName(column.getName()) + "(final " + column.getClassName() + " " + column.getName() + ") {" + _N);
+			bw.write("	public final void " + SrcUtils.getJavaSetterName(column.getName()) + "(final " + SrcUtils.getSimpleName(column.getClassName()) + " " + column.getName() + ") {" + _N);
 			bw.write("		this." + column.getName() + " = " + column.getName() + ";" + _N);
 			bw.write("	}" + _N);
 			bw.write(_N);
-			bw.write("	public final " + column.getClassName() + " " + SrcUtils.getJavaGetterName(column.getName()) + "() {" + _N);
+			bw.write("	public final " + SrcUtils.getSimpleName(column.getClassName()) + " " + SrcUtils.getJavaGetterName(column.getName()) + "() {" + _N);
 			bw.write("		return this." + column.getName() + ";" + _N);
 			bw.write("	}" + _N);
 			bw.write(_N);

@@ -36,12 +36,21 @@ public final class DAO {
 
 	public static final List<Column> mockColumns() throws Exception {
 		final List<Column> columns = new ArrayList<Column>();
+		//
 		final Column column = new Column();
 		column.setName("id");
 		column.setType(Types.INTEGER);
 		column.setTypeName("INTEGER");
 		column.setClassName("int");
 		columns.add(column);
+		//
+		final Column column2 = new Column();
+		column2.setName("name");
+		column2.setType(Types.VARCHAR);
+		column2.setTypeName("VARCHAR");
+		column2.setClassName("java.lang.String");
+		columns.add(column2);
+		//
 		return columns;
 	}
 

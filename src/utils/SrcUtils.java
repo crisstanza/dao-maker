@@ -15,6 +15,14 @@ public final class SrcUtils {
 		}
 	}
 
+	public static final String getSimpleName(final String str) throws Exception {
+		if ( str == null ) {
+			return null;
+		} else {
+			return str.substring(str.lastIndexOf('.') + 1);
+		}
+	}
+
 	public static final String getJavaClassName(final String str) throws Exception {
 		if ( str == null ) {
 			return null;
@@ -22,6 +30,16 @@ public final class SrcUtils {
 			return str.toUpperCase();
 		} else {
 			return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+		}
+	}
+
+	public static final String getJavaVariableName(final String str) throws Exception {
+		if ( str == null ) {
+			return null;
+		} else if ( str.length() == 1 ) {
+			return str.toLowerCase();
+		} else {
+			return str.substring(0, 1).toLowerCase() + str.substring(1).toLowerCase();
 		}
 	}
 
