@@ -23,12 +23,13 @@ public final class DAOMaker {
 	}
 
 	public final void go(final Table table) throws Exception {
-		final String mainClassName = SrcUtils.getJavaClassName(table.getName());
-		final String mainVarName = SrcUtils.getJavaVariableName(table.getName());
 		final String packageName = config.getDefaultPackage() + ".dao";
 		final File folderOut = new File(config.getFolderOut());
 		final File defaultPackage = new File(folderOut, SrcUtils.getFolderFromPackage(packageName));
 		defaultPackage.mkdirs();
+		goGenericDAO(packageName, defaultPackage);
+		final String mainClassName = SrcUtils.getJavaClassName(table.getName());
+		final String mainVarName = SrcUtils.getJavaVariableName(table.getName());
 		final File file = new File(defaultPackage, SrcUtils.getJavaSourceName(table.getName(), "DAO"));
 		final Writer bw = IOUtils.getWriter(file);
 		bw.write("package " + packageName + ";" + _N);
@@ -118,13 +119,24 @@ public final class DAOMaker {
 		bw.write("	private static final "+mainClassName+" find(final ResultSet rs) throws Exception {" + _N);
 		bw.write("		final " + mainClassName + " " + mainVarName + " = new " + mainClassName + "();" + _N);
 		for ( Column column : table.getColumns() ) {
-			bw.write("				" + mainVarName + "." + SrcUtils.getJavaSetterName(column.getName()) + "(rs.get(\""+column.getName()+"\"));" + _N);
+			bw.write("		" + mainVarName + "." + SrcUtils.getJavaSetterName(column.getName()) + "(rs.get"+SrcUtils.getJavaClassName(SrcUtils.getSimpleName(column.getClassName())) +"(\""+column.getName()+"\"));" + _N);
 		}
 		bw.write("		return " + mainVarName + ";" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("}"+ _N);
 		bw.close();
+	}
+
+	public final void goGenericDAO(final String packageName, final File defaultPackage) throws Exception {
+		final File file = new File(defaultPackage, SrcUtils.getJavaSourceName(table.getName(), "DAO"));
+		final Writer bw = IOUtils.getWriter(file);
+		bw.write("package " + packageName + ";" + _N);
+		bw.write(_N);
+		bw.write("public final class DAO {"+ _N);
+		bw.write(_N);
+		bw.write("}"+ _N);
+		bw.close();		
 	}
 
 }

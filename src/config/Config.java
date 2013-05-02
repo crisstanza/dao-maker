@@ -38,4 +38,8 @@ public final class Config {
 		return rb.getString("default-package");
 	}
 
+	public final String getFilterSufix() {
+		return rb.getString("filter-sufix");
+	}
+
 }

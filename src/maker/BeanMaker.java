@@ -49,6 +49,17 @@ public final class BeanMaker {
 		}
 		bw.write("}"+ _N);
 		bw.close();
+		go(table, packageName, defaultPackage);
+	}
+
+	public final void go(final Table table, final String packageName, final File defaultPackage) throws Exception {
+		final File file = new File(defaultPackage, SrcUtils.getJavaSourceName(table.getName(), config.getFilterSufix()));
+		final Writer bw = IOUtils.getWriter(file);
+		bw.write("package " + packageName + ";" + _N);
+		bw.write(_N);
+		bw.write("public final class " + SrcUtils.getJavaClassName(table.getName(), config.getFilterSufix()) + " extends "+SrcUtils.getJavaClassName(table.getName())+" {"+ _N);
+		bw.write("}"+ _N);
+		bw.close();		
 	}
 
 }

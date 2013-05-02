@@ -23,6 +23,10 @@ public final class SrcUtils {
 		}
 	}
 
+	public static final String getJavaClassName(final String str, final String str2) throws Exception {
+		return SrcUtils.getJavaClassName(str) + str2;
+	}
+
 	public static final String getJavaClassName(final String str) throws Exception {
 		if ( str == null ) {
 			return null;
