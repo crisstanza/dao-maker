@@ -24,6 +24,15 @@ public final class Table {
 		return this.columns;
 	}
 
+	public final Column getPrimaryKey() {
+		for ( Column column : columns ) {
+			if ( column.isPrimaryKey() ) {
+				return column;
+			}
+		}
+		return null;
+	}
+
 	public final String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("\n" + name + "\n");

@@ -39,6 +39,10 @@ public final class Column {
 		return this.className;
 	}
 
+	public final boolean isPrimaryKey() {
+		return name.equals("id");
+	}
+
 	public final String toString() {
 		return type + " " + typeName + " " + name;
 	}

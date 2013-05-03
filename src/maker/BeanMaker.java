@@ -23,7 +23,7 @@ public final class BeanMaker {
 	}
 
 	public final void go(final Table table) throws Exception {
-		final String packageName = config.getDefaultPackage() + ".model";
+		final String packageName = SrcUtils.getDefaultBeansPackage(config.getDefaultPackage());
 		final File folderOut = new File(config.getFolderOut());
 		final File defaultPackage = new File(folderOut, SrcUtils.getFolderFromPackage(packageName));
 		defaultPackage.mkdirs();

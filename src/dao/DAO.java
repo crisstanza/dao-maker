@@ -36,21 +36,38 @@ public final class DAO {
 
 	public static final List<Column> mockColumns() throws Exception {
 		final List<Column> columns = new ArrayList<Column>();
-		//
-		final Column column = new Column();
-		column.setName("id");
-		column.setType(Types.INTEGER);
-		column.setTypeName("INTEGER");
-		column.setClassName("int");
-		columns.add(column);
-		//
-		final Column column2 = new Column();
-		column2.setName("name");
-		column2.setType(Types.VARCHAR);
-		column2.setTypeName("VARCHAR");
-		column2.setClassName("java.lang.String");
-		columns.add(column2);
-		//
+		{
+			final Column column = new Column();
+			column.setName("id");
+			column.setType(Types.INTEGER);
+			column.setTypeName("INTEGER");
+			column.setClassName("java.lang.Integer");
+			columns.add(column);
+		}
+		{
+			final Column column2 = new Column();
+			column2.setName("name");
+			column2.setType(Types.VARCHAR);
+			column2.setTypeName("VARCHAR");
+			column2.setClassName("java.lang.String");
+			columns.add(column2);
+		}
+		{
+			final Column column3 = new Column();
+			column3.setName("status");
+			column3.setType(Types.BOOLEAN);
+			column3.setTypeName("BOOLEAN");
+			column3.setClassName("java.lang.Boolean");
+			columns.add(column3);
+		}
+		{
+			final Column column4 = new Column();
+			column4.setName("createDate");
+			column4.setType(Types.TIME);
+			column4.setTypeName("TIME");
+			column4.setClassName("java.util.Date");
+			columns.add(column4);
+		}
 		return columns;
 	}
 

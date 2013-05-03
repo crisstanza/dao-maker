@@ -30,6 +30,8 @@ public final class SrcUtils {
 	public static final String getJavaClassName(final String str) throws Exception {
 		if ( str == null ) {
 			return null;
+		} else if ( str.length() == 0 ) {
+			return str;
 		} else if ( str.length() == 1 ) {
 			return str.toUpperCase();
 		} else {
@@ -40,6 +42,8 @@ public final class SrcUtils {
 	public static final String getJavaVariableName(final String str) throws Exception {
 		if ( str == null ) {
 			return null;
+		} else if ( str.length() == 0 ) {
+			return str;
 		} else if ( str.length() == 1 ) {
 			return str.toLowerCase();
 		} else {
@@ -61,6 +65,14 @@ public final class SrcUtils {
 	
 	public static final String getJavaGetterName(final String str) throws Exception {
 		return "get" + SrcUtils.getJavaClassName(str);
+	}
+
+	public static final String getDefaultBeansPackage(final String defaultPackage) {
+		return defaultPackage + ".model";
+	}
+	
+	public static final String getDefaultDAOsPackage(final String defaultPackage) {
+		return defaultPackage + ".dao";
 	}
 	
 }

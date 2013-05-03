@@ -20,6 +20,7 @@ public final class Maker {
 
 	private final void goDAOs(final List<Table> tables) throws Exception {
 		final DAOMaker daoMaker = new DAOMaker();
+		daoMaker.goGenericDAO();
 		for ( Table table : tables ) {
 			daoMaker.go(table);
 		}
