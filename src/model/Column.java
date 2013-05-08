@@ -44,7 +44,7 @@ public final class Column {
 	}
 
 	public final String toString() {
-		return type + " " + typeName + " " + name;
+		return name + " " + type + " " + typeName + " " + className;
 	}
 
 }

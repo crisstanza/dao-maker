@@ -40,7 +40,7 @@ public final class DAO {
 			final Column column = new Column();
 			column.setName("id");
 			column.setType(Types.INTEGER);
-			column.setTypeName("INTEGER");
+			column.setTypeName("int4");
 			column.setClassName("java.lang.Integer");
 			columns.add(column);
 		}
@@ -48,7 +48,7 @@ public final class DAO {
 			final Column column2 = new Column();
 			column2.setName("name");
 			column2.setType(Types.VARCHAR);
-			column2.setTypeName("VARCHAR");
+			column2.setTypeName("varchar");
 			column2.setClassName("java.lang.String");
 			columns.add(column2);
 		}
@@ -56,7 +56,7 @@ public final class DAO {
 			final Column column3 = new Column();
 			column3.setName("status");
 			column3.setType(Types.BOOLEAN);
-			column3.setTypeName("BOOLEAN");
+			column3.setTypeName("bool");
 			column3.setClassName("java.lang.Boolean");
 			columns.add(column3);
 		}
@@ -64,9 +64,17 @@ public final class DAO {
 			final Column column4 = new Column();
 			column4.setName("createDate");
 			column4.setType(Types.TIME);
-			column4.setTypeName("TIME");
+			column4.setTypeName("timestamp");
 			column4.setClassName("java.util.Date");
 			columns.add(column4);
+		}
+		{
+			final Column column5 = new Column();
+			column5.setName("createDate");
+			column5.setType(Types.TIME);
+			column5.setTypeName("numeric");
+			column5.setClassName("java.math.BigDecimal");
+			columns.add(column5);
 		}
 		return columns;
 	}
@@ -111,7 +119,11 @@ public final class DAO {
 			column.setName(md.getColumnName(i));
 			column.setType(md.getColumnType(i));
 			column.setTypeName(md.getColumnTypeName(i));
+			column.setClassName(md.getColumnClassName(i));
 			columns.add(column);
+			//
+			// System.out.println( column );
+			//
 		}
 		return columns;
 	}
