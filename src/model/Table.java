@@ -25,8 +25,8 @@ public final class Table {
 	}
 
 	public final Column getPrimaryKey() {
-		for ( Column column : columns ) {
-			if ( column.isPrimaryKey() ) {
+		for (Column column : columns) {
+			if (column.isPrimaryKey()) {
 				return column;
 			}
 		}

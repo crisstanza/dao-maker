@@ -2,14 +2,14 @@ package main;
 
 import java.util.List;
 
-import dao.DAO;
-import model.Table;
-
 import maker.Maker;
+import model.Table;
+import config.Config;
+import dao.DAO;
 
 public final class Main {
 
-	private final boolean MOCK = false;
+	private final Config config;
 
 	public static final void main(final String[] args) throws Exception {
 		final Main main = new Main();
@@ -17,10 +17,11 @@ public final class Main {
 	}
 
 	private Main() {
+		config = Config.getInstance();
 	}
 
 	private final void go() throws Exception {
-		final List<Table> tables = MOCK ? DAO.mockTables() : DAO.getTables();
+		final List<Table> tables = config.isMock() ? DAO.mockTables() : DAO.getTables();
 		final Maker maker = new Maker();
 		maker.go(tables);
 		//

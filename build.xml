@@ -4,6 +4,7 @@
 
 	<target name="clean">
 		<delete dir="classes" />
+		<delete dir="out" />
 	</target>
 
 	<target name="make" depends="clean">

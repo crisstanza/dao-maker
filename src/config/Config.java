@@ -42,4 +42,12 @@ public final class Config {
 		return rb.getString("filter-sufix");
 	}
 
+	public final String getDataSourceName() {
+		return rb.getString("data-source-name");
+	}
+
+	public final boolean isMock() {
+		return Boolean.parseBoolean(rb.getString("mock"));
+	}
+
 }

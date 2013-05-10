@@ -9,20 +9,28 @@ public final class Maker {
 	public final void go(final List<Table> tables) throws Exception {
 		goBeans(tables);
 		goDAOs(tables);
+		goEJBs(tables);
 	}
 
 	private final void goBeans(final List<Table> tables) throws Exception {
-		final BeanMaker beanMaker = new BeanMaker();
-		for ( Table table : tables ) {
-			beanMaker.go(table);
+		final BeanMaker maker = new BeanMaker();
+		for (Table table : tables) {
+			maker.go(table);
 		}
 	}
 
 	private final void goDAOs(final List<Table> tables) throws Exception {
-		final DAOMaker daoMaker = new DAOMaker();
-		daoMaker.goGenericDAO();
-		for ( Table table : tables ) {
-			daoMaker.go(table);
+		final DAOMaker maker = new DAOMaker();
+		maker.goGenericDAO();
+		for (Table table : tables) {
+			maker.go(table);
+		}
+	}
+
+	private final void goEJBs(final List<Table> tables) throws Exception {
+		final EJBMaker maker = new EJBMaker();
+		for (Table table : tables) {
+			maker.go(table);
 		}
 	}
 

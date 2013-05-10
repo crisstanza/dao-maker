@@ -1,16 +1,13 @@
 package maker;
 
 import java.io.File;
+import java.io.Writer;
 
-import java.util.List;
-
-import config.Config;
 import model.Column;
 import model.Table;
 import utils.IOUtils;
 import utils.SrcUtils;
-
-import java.io.Writer;
+import config.Config;
 
 public final class BeanMaker {
 
@@ -31,13 +28,13 @@ public final class BeanMaker {
 		final Writer bw = IOUtils.getWriter(file);
 		bw.write("package " + packageName + ";" + _N);
 		bw.write(_N);
-		bw.write("public final class " + SrcUtils.getJavaClassName(table.getName()) + " {"+ _N);
+		bw.write("public class " + SrcUtils.getJavaClassName(table.getName()) + " {" + _N);
 		bw.write(_N);
-		for ( Column column : table.getColumns() ) {
+		for (Column column : table.getColumns()) {
 			bw.write("	private " + SrcUtils.getSimpleName(column.getClassName()) + " " + column.getName() + ";" + _N);
 		}
 		bw.write(_N);
-		for ( Column column : table.getColumns() ) {
+		for (Column column : table.getColumns()) {
 			bw.write("	public final void " + SrcUtils.getJavaSetterName(column.getName()) + "(final " + SrcUtils.getSimpleName(column.getClassName()) + " " + column.getName() + ") {" + _N);
 			bw.write("		this." + column.getName() + " = " + column.getName() + ";" + _N);
 			bw.write("	}" + _N);
@@ -47,7 +44,7 @@ public final class BeanMaker {
 			bw.write("	}" + _N);
 			bw.write(_N);
 		}
-		bw.write("}"+ _N);
+		bw.write("}" + _N);
 		bw.close();
 		go(table, packageName, defaultPackage);
 	}
@@ -57,9 +54,9 @@ public final class BeanMaker {
 		final Writer bw = IOUtils.getWriter(file);
 		bw.write("package " + packageName + ";" + _N);
 		bw.write(_N);
-		bw.write("public final class " + SrcUtils.getJavaClassName(table.getName(), config.getFilterSufix()) + " extends "+SrcUtils.getJavaClassName(table.getName())+" {"+ _N);
-		bw.write("}"+ _N);
-		bw.close();		
+		bw.write("public final class " + SrcUtils.getJavaClassName(table.getName(), config.getFilterSufix()) + " extends " + SrcUtils.getJavaClassName(table.getName()) + " {" + _N);
+		bw.write("}" + _N);
+		bw.close();
 	}
 
 }

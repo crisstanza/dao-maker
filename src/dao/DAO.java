@@ -19,7 +19,7 @@ public final class DAO {
 	private DAO() {
 	}
 
-	private static final Connection getConnection() throws Exception {
+	private static final Connection open() throws Exception {
 		final Config config = Config.getInstance();
 		Class.forName(config.getDbDriver());
 		return DriverManager.getConnection(config.getDbUrl(), config.getDbUser(), config.getDbPass());
@@ -63,15 +63,15 @@ public final class DAO {
 		{
 			final Column column4 = new Column();
 			column4.setName("createDate");
-			column4.setType(Types.TIME);
+			column4.setType(Types.TIMESTAMP);
 			column4.setTypeName("timestamp");
 			column4.setClassName("java.util.Date");
 			columns.add(column4);
 		}
 		{
 			final Column column5 = new Column();
-			column5.setName("createDate");
-			column5.setType(Types.TIME);
+			column5.setName("price");
+			column5.setType(Types.DOUBLE);
 			column5.setTypeName("numeric");
 			column5.setClassName("java.math.BigDecimal");
 			columns.add(column5);
@@ -82,9 +82,7 @@ public final class DAO {
 	public static final List<Table> getTables() throws Exception {
 		Connection con = null;
 		try {
-			final Config config = Config.getInstance();
-			Class.forName(config.getDbDriver());
-			con = DriverManager.getConnection(config.getDbUrl(), config.getDbUser(), config.getDbPass());
+			con = DAO.open();
 			return DAO.getTables(con);
 		} catch (final Exception exc) {
 			throw exc;
