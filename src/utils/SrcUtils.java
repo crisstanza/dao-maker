@@ -7,6 +7,7 @@ import java.util.Map;
 public final class SrcUtils {
 
 	private static Map<String, String> CLASS_NAME_REPLACEMENTS;
+	private static Map<String, String> PREPARED_STATEMENT_REPLACEMENTS;
 
 	private static final Map<String, String> getClassNameReplacements() {
 		if (CLASS_NAME_REPLACEMENTS == null) {
@@ -17,7 +18,37 @@ public final class SrcUtils {
 		return CLASS_NAME_REPLACEMENTS;
 	}
 
+	private static final Map<String, String> getPreparedStatementReplacements() {
+		if (PREPARED_STATEMENT_REPLACEMENTS == null) {
+			PREPARED_STATEMENT_REPLACEMENTS = new HashMap<String, String>();
+			PREPARED_STATEMENT_REPLACEMENTS.put("BigDecimal", "Double");
+			PREPARED_STATEMENT_REPLACEMENTS.put("Timestamp", "Date");
+			PREPARED_STATEMENT_REPLACEMENTS.put("Integer", "Int");
+		}
+		return PREPARED_STATEMENT_REPLACEMENTS;
+	}
+
 	private SrcUtils() {
+	}
+
+	private static final String fixSimpleName(final String key) {
+		final Map<String, String> replacements = SrcUtils.getClassNameReplacements();
+		final String value = replacements.get(key);
+		if (value == null) {
+			return key;
+		} else {
+			return value;
+		}
+	}
+
+	private static final String fixPreparedStatementName(final String key) {
+		final Map<String, String> replacements = SrcUtils.getPreparedStatementReplacements();
+		final String value = replacements.get(key);
+		if (value == null) {
+			return key;
+		} else {
+			return value;
+		}
 	}
 
 	public static final String getFolderFromPackage(final String str) throws Exception {
@@ -32,17 +63,7 @@ public final class SrcUtils {
 		if (str == null) {
 			return null;
 		} else {
-			return fixSimpleName(str.substring(str.lastIndexOf('.') + 1));
-		}
-	}
-
-	private static final String fixSimpleName(final String key) {
-		final Map<String, String> replacements = SrcUtils.getClassNameReplacements();
-		final String value = replacements.get(key);
-		if (value == null) {
-			return key;
-		} else {
-			return value;
+			return SrcUtils.fixSimpleName(str.substring(str.lastIndexOf('.') + 1));
 		}
 	}
 
@@ -87,6 +108,22 @@ public final class SrcUtils {
 			return str.toUpperCase() + str2 + ".java";
 		} else {
 			return str.substring(0, 1).toUpperCase() + str.substring(1) + str2 + ".java";
+		}
+	}
+
+	public static final String getJavaPreparedStatementSetterName(final String str) {
+		if (str == null) {
+			return null;
+		} else {
+			return "set" + SrcUtils.fixPreparedStatementName(str.substring(str.lastIndexOf('.') + 1));
+		}
+	}
+
+	public static final String getJavaPreparedStatementGetterName(final String str) {
+		if (str == null) {
+			return null;
+		} else {
+			return "get" + SrcUtils.fixPreparedStatementName(str.substring(str.lastIndexOf('.') + 1));
 		}
 	}
 

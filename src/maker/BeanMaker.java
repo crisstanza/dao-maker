@@ -28,6 +28,8 @@ public final class BeanMaker {
 		final Writer bw = IOUtils.getWriter(file);
 		bw.write("package " + packageName + ";" + _N);
 		bw.write(_N);
+		bw.write("import java.util.Date;" + _N);
+		bw.write(_N);
 		bw.write("public class " + SrcUtils.getJavaClassName(table.getName()) + " {" + _N);
 		bw.write(_N);
 		for (Column column : table.getColumns()) {

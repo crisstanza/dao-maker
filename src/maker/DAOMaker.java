@@ -34,11 +34,11 @@ public final class DAOMaker {
 		bw.write("package " + packageName + ";" + _N);
 		bw.write(_N);
 		bw.write("import java.sql.Connection;" + _N);
+		bw.write("import java.sql.Date;" + _N);
 		bw.write("import java.sql.PreparedStatement;" + _N);
 		bw.write("import java.sql.ResultSet;" + _N);
-		bw.write(_N);
+		bw.write("import java.sql.Statement;" + _N);
 		bw.write("import java.util.ArrayList;" + _N);
-		bw.write("import java.util.Date;" + _N);
 		bw.write("import java.util.List;" + _N);
 		bw.write(_N);
 		bw.write("import " + beanPackageName + "." + mainBeanClassName + ";" + _N);
@@ -66,18 +66,11 @@ public final class DAOMaker {
 			final Column column = table.getColumns().get(i);
 			bw.write("			sb.append(" + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "() != null ? \"	" + column.getName() + " = ? AND\" + _N : \"\");" + _N);
 		}
-		bw.write("			sb.append(\"	1 = 1\");" + _N);
+		bw.write("			sb.append(\"	1 = 1\" + _N);" + _N);
 		bw.write("		}" + _N);
+		bw.write("		sb.append(\"ORDER BY\" + _N);" + _N);
+		bw.write("		sb.append(\"	" + table.getPrimaryKey().getName() + "\");" + _N);
 		bw.write("		return sb.toString();" + _N);
-		bw.write("	}" + _N);
-		bw.write(_N);
-		bw.write("	public static final int save(final " + mainBeanClassName + " " + mainVarName + ") throws Exception {" + _N);
-		bw.write("		if ( " + mainVarName + ".getId() == null ) {" + _N);
-		bw.write("			" + mainClassName + ".update(" + mainVarName + ");" + _N);
-		bw.write("		} else {" + _N);
-		bw.write("			" + mainClassName + ".insert(" + mainVarName + ");" + _N);
-		bw.write("		}" + _N);
-		bw.write("		return " + mainVarName + ".getId();" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("	private static final void update(final " + mainBeanClassName + " " + mainVarName + ") throws Exception {" + _N);
@@ -100,13 +93,13 @@ public final class DAOMaker {
 		for (int i = 0, j = 1; i < table.getColumns().size(); i++) {
 			final Column column = table.getColumns().get(i);
 			if (!column.isPrimaryKey()) {
-				bw.write("			ps.set" + SrcUtils.getSimpleName(column.getClassName()) + "(" + j + ", " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+				bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
 				j++;
 			}
 		}
-		bw.write("			ps.set" + SrcUtils.getJavaClassName(SrcUtils.getSimpleName(table.getPrimaryKey().getClassName())) + "(" + table.getColumns().size() + ", " + mainVarName + "." + SrcUtils.getJavaGetterName(table.getPrimaryKey().getName()) + "());" + _N);
+		bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(table.getPrimaryKey().getClassName()) + "(" + table.getColumns().size() + ", " + mainVarName + "." + SrcUtils.getJavaGetterName(table.getPrimaryKey().getName()) + "());" + _N);
 		bw.write("			ps.executeUpdate();" + _N);
-		bw.write("		} catch ( final Exception exc ) {" + _N);
+		bw.write("		} catch (final Exception exc) {" + _N);
 		bw.write("			exc.printStackTrace();" + _N);
 		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
 		bw.write("		} finally {" + _N);
@@ -140,15 +133,15 @@ public final class DAOMaker {
 		for (int i = 0, j = 1; i < table.getColumns().size(); i++) {
 			final Column column = table.getColumns().get(i);
 			if (!column.isPrimaryKey()) {
-				bw.write("			ps.set" + SrcUtils.getSimpleName(column.getClassName()) + "(" + j + ", " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+				bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
 				j++;
 			}
 		}
 		bw.write("			ps.executeUpdate();" + _N);
 		bw.write("			rs = ps.getGeneratedKeys();" + _N);
 		bw.write("			rs.next();" + _N);
-		bw.write("			" + mainVarName + ".setId(rs.getInteger(1));" + _N);
-		bw.write("		} catch ( final Exception exc ) {" + _N);
+		bw.write("			" + mainVarName + ".setId(rs." + SrcUtils.getJavaPreparedStatementGetterName(table.getPrimaryKey().getClassName()) + "(1));" + _N);
+		bw.write("		} catch (final Exception exc) {" + _N);
 		bw.write("			exc.printStackTrace();" + _N);
 		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
 		bw.write("		} finally {" + _N);
@@ -156,27 +149,44 @@ public final class DAOMaker {
 		bw.write("		}" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
+		bw.write("	public static final int save(final " + mainBeanClassName + " " + mainVarName + ") throws Exception {" + _N);
+		bw.write("		if ( " + mainVarName + ".getId() == null ) {" + _N);
+		bw.write("			" + mainClassName + ".update(" + mainVarName + ");" + _N);
+		bw.write("		} else {" + _N);
+		bw.write("			" + mainClassName + ".insert(" + mainVarName + ");" + _N);
+		bw.write("		}" + _N);
+		bw.write("		return " + mainVarName + ".getId();" + _N);
+		bw.write("	}" + _N);
+		bw.write(_N);
 		bw.write("	public static final " + mainBeanClassName + " findById(final Integer id) throws Exception {" + _N);
+		bw.write("		return " + mainClassName + ".findById(id, null);" + _N);
+		bw.write("	}" + _N);
+		bw.write(_N);
+		bw.write("	public static final " + mainBeanClassName + " findById(final Integer id, final Connection con) throws Exception {" + _N);
 		bw.write("		final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + " = new " + mainBeanClassName + config.getFilterSufix() + "();" + _N);
-		bw.write("		filter.setId(id);" + _N);
-		bw.write("		return " + mainClassName + ".find(" + mainClassName + ".getSQLSelect(" + filterVarName + "), " + filterVarName + ");" + _N);
+		bw.write("		" + filterVarName + ".setId(id);" + _N);
+		bw.write("		return " + mainClassName + ".find(con, " + mainClassName + ".getSQLSelect(" + filterVarName + "), " + filterVarName + ");" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("	public static final List<" + mainBeanClassName + "> findAll() throws Exception {" + _N);
-		bw.write("		final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + " = null;" + _N);
-		bw.write("		return " + mainClassName + ".findAll(" + mainClassName + ".getSQLSelect(" + filterVarName + "), " + filterVarName + ");" + _N);
+		bw.write("		return " + mainClassName + ".findAll(null);" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
-		bw.write("	private static final " + mainBeanClassName + " find(final String query, final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + ") throws Exception {" + _N);
+		bw.write("	public static final List<" + mainBeanClassName + "> findAll(final Connection con) throws Exception {" + _N);
+		bw.write("		final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + " = null;" + _N);
+		bw.write("		return " + mainClassName + ".findAll(con, " + mainClassName + ".getSQLSelect(" + filterVarName + "), " + filterVarName + ");" + _N);
+		bw.write("	}" + _N);
+		bw.write(_N);
+		bw.write("	private static final " + mainBeanClassName + " find(final Connection conAux, final String query, final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + ") throws Exception {" + _N);
 		bw.write("		PreparedStatement ps = null;" + _N);
 		bw.write("		ResultSet rs = null;" + _N);
 		bw.write("		Connection con = null;" + _N);
 		bw.write("		try {" + _N);
-		bw.write("			con = DAO.open();" + _N);
+		bw.write("			con = conAux == null ? DAO.open() : conAux;" + _N);
 		bw.write("			ps = con.prepareStatement(query);" + _N);
 		bw.write("			rs = find(ps, " + filterVarName + ");" + _N);
-		bw.write("			if ( rs.next() ) {" + _N);
-		bw.write("				return find(rs);" + _N);
+		bw.write("			if (rs.next()) {" + _N);
+		bw.write("				return find(rs, con);" + _N);
 		bw.write("			} else {" + _N);
 		bw.write("				return null;" + _N);
 		bw.write("			}" + _N);
@@ -184,38 +194,38 @@ public final class DAOMaker {
 		bw.write("			exc.printStackTrace();" + _N);
 		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
 		bw.write("		} finally {" + _N);
-		bw.write("			DAO.close(rs, ps, con);" + _N);
+		bw.write("			DAO.close(rs, ps, conAux == null ? con : null);" + _N);
 		bw.write("		}" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
-		bw.write("	private static final List<" + mainBeanClassName + "> findAll(final String query, final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + ") throws Exception {" + _N);
+		bw.write("	private static final List<" + mainBeanClassName + "> findAll(final Connection conAux, final String query, final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + ") throws Exception {" + _N);
 		bw.write("		PreparedStatement ps = null;" + _N);
 		bw.write("		ResultSet rs = null;" + _N);
 		bw.write("		Connection con = null;" + _N);
 		bw.write("		final List<" + mainBeanClassName + "> list = new ArrayList<" + mainBeanClassName + ">();" + _N);
 		bw.write("		try {" + _N);
-		bw.write("			con = DAO.open();" + _N);
+		bw.write("			con = conAux == null ? DAO.open() : conAux;" + _N);
 		bw.write("			ps = con.prepareStatement(query);" + _N);
 		bw.write("			rs = find(ps, " + filterVarName + ");" + _N);
-		bw.write("			while ( rs.next() ) {" + _N);
-		bw.write("				list.add(find(rs));" + _N);
+		bw.write("			while (rs.next()) {" + _N);
+		bw.write("				list.add(find(rs, con));" + _N);
 		bw.write("			}" + _N);
 		bw.write("			return list;" + _N);
 		bw.write("		} catch ( final Exception exc ) {" + _N);
 		bw.write("			exc.printStackTrace();" + _N);
 		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
 		bw.write("		} finally {" + _N);
-		bw.write("			DAO.close(rs, ps, con);" + _N);
+		bw.write("			DAO.close(rs, ps, conAux == null ? con : null);" + _N);
 		bw.write("		}" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
-		bw.write("	private static final ResultSet find(final PreparedStatement ps, final CategoriaFiltro filtro) throws Exception {" + _N);
+		bw.write("	private static final ResultSet find(final PreparedStatement ps, final " + mainBeanClassName + config.getFilterSufix() + " " + filterVarName + ") throws Exception {" + _N);
 		bw.write("		if (" + filterVarName + " != null) {" + _N);
 		bw.write("			int i = 1;" + _N);
 		for (int i = 0; i < table.getColumns().size(); i++) {
 			final Column column = table.getColumns().get(i);
 			bw.write("			if (" + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "() != null) {" + _N);
-			bw.write("				ps.set" + SrcUtils.getSimpleName(column.getClassName()) + "(i++, " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+			bw.write("				ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(i++, " + SrcUtils.getCast(column.getType(), " ") + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
 			bw.write("			}" + _N);
 		}
 		bw.write("		}" + _N);
@@ -223,10 +233,10 @@ public final class DAOMaker {
 		bw.write("		return rs;" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
-		bw.write("	private static final " + mainBeanClassName + " find(final ResultSet rs) throws Exception {" + _N);
+		bw.write("	private static final " + mainBeanClassName + " find(final ResultSet rs, final Connection con) throws Exception {" + _N);
 		bw.write("		final " + mainBeanClassName + " " + mainVarName + " = new " + mainBeanClassName + "();" + _N);
 		for (Column column : table.getColumns()) {
-			bw.write("		" + mainVarName + "." + SrcUtils.getJavaSetterName(column.getName()) + "(rs.get" + SrcUtils.getJavaClassName(SrcUtils.getSimpleName(column.getClassName())) + "(\"" + column.getName() + "\"));" + _N);
+			bw.write("		" + mainVarName + "." + SrcUtils.getJavaSetterName(column.getName()) + "(rs." + SrcUtils.getJavaPreparedStatementGetterName(column.getClassName()) + "(\"" + column.getName() + "\"));" + _N);
 		}
 		bw.write("		return " + mainVarName + ";" + _N);
 		bw.write("	}" + _N);
@@ -254,7 +264,7 @@ public final class DAOMaker {
 		bw.write(_N);
 		bw.write("public final class DAO {" + _N);
 		bw.write(_N);
-		bw.write("	private static final String DATA_SOURCE = \"jdbc/" + config.getDataSourceName() + "\";" + _N);
+		bw.write("	private static final String DATA_SOURCE = \"" + config.getDataSourceName() + "\";" + _N);
 		bw.write(_N);
 		bw.write("	private DAO() {" + _N);
 		bw.write("	}" + _N);
