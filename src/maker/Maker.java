@@ -15,7 +15,9 @@ public final class Maker {
 	private final void goBeans(final List<Table> tables) throws Exception {
 		final BeanMaker maker = new BeanMaker();
 		for (Table table : tables) {
-			maker.go(table);
+			if (table.getPrimaryKey() != null) {
+				maker.go(table);
+			}
 		}
 	}
 
@@ -23,14 +25,18 @@ public final class Maker {
 		final DAOMaker maker = new DAOMaker();
 		maker.goGenericDAO();
 		for (Table table : tables) {
-			maker.go(table);
+			if (table.getPrimaryKey() != null) {
+				maker.go(table);
+			}
 		}
 	}
 
 	private final void goEJBs(final List<Table> tables) throws Exception {
 		final EJBMaker maker = new EJBMaker();
 		for (Table table : tables) {
-			maker.go(table);
+			if (table.getPrimaryKey() != null) {
+				maker.go(table);
+			}
 		}
 	}
 
