@@ -34,10 +34,10 @@ public final class DAOMaker {
 		bw.write("package " + packageName + ";" + _N);
 		bw.write(_N);
 		bw.write("import java.sql.Connection;" + _N);
-		bw.write("import java.sql.Date;" + _N);
 		bw.write("import java.sql.PreparedStatement;" + _N);
 		bw.write("import java.sql.ResultSet;" + _N);
 		bw.write("import java.sql.Statement;" + _N);
+		bw.write("import java.sql.Timestamp;" + _N);
 		bw.write("import java.util.ArrayList;" + _N);
 		bw.write("import java.util.List;" + _N);
 		bw.write(_N);
@@ -75,7 +75,6 @@ public final class DAOMaker {
 		bw.write(_N);
 		bw.write("	private static final void update(final " + mainBeanClassName + " " + mainVarName + ") throws Exception {" + _N);
 		bw.write("		PreparedStatement ps = null;" + _N);
-		bw.write("		ResultSet rs = null;" + _N);
 		bw.write("		Connection con = null;" + _N);
 		bw.write("		StringBuilder query = new StringBuilder();" + _N);
 		bw.write("		try {" + _N);
@@ -93,7 +92,11 @@ public final class DAOMaker {
 		for (int i = 0, j = 1; i < table.getColumns().size(); i++) {
 			final Column column = table.getColumns().get(i);
 			if (!column.isPrimaryKey()) {
-				bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+				if (SrcUtils.isTimestamp(column.getType())) {
+					bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", new Timestamp(" + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "().getTime()));" + _N);
+				} else {
+					bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", " + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+				}
 				j++;
 			}
 		}
@@ -103,7 +106,7 @@ public final class DAOMaker {
 		bw.write("			exc.printStackTrace();" + _N);
 		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
 		bw.write("		} finally {" + _N);
-		bw.write("			DAO.close(rs, ps, con);" + _N);
+		bw.write("			DAO.close(null, ps, con);" + _N);
 		bw.write("		}" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
@@ -133,7 +136,11 @@ public final class DAOMaker {
 		for (int i = 0, j = 1; i < table.getColumns().size(); i++) {
 			final Column column = table.getColumns().get(i);
 			if (!column.isPrimaryKey()) {
-				bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", " + SrcUtils.getCast(column.getType(), " ") + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+				if (SrcUtils.isTimestamp(column.getType())) {
+					bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", new Timestamp(" + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "().getTime()));" + _N);
+				} else {
+					bw.write("			ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(" + j + ", " + mainVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+				}
 				j++;
 			}
 		}
@@ -159,7 +166,8 @@ public final class DAOMaker {
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("	public static final " + mainBeanClassName + " findById(final Integer id) throws Exception {" + _N);
-		bw.write("		return " + mainClassName + ".findById(id, null);" + _N);
+		bw.write("		final Connection con = null;" + _N);
+		bw.write("		return " + mainClassName + ".findById(id, con);" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("	public static final " + mainBeanClassName + " findById(final Integer id, final Connection con) throws Exception {" + _N);
@@ -169,7 +177,8 @@ public final class DAOMaker {
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("	public static final List<" + mainBeanClassName + "> findAll() throws Exception {" + _N);
-		bw.write("		return " + mainClassName + ".findAll(null);" + _N);
+		bw.write("		final Connection con = null;" + _N);
+		bw.write("		return " + mainClassName + ".findAll(con);" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
 		bw.write("	public static final List<" + mainBeanClassName + "> findAll(final Connection con) throws Exception {" + _N);
@@ -225,7 +234,11 @@ public final class DAOMaker {
 		for (int i = 0; i < table.getColumns().size(); i++) {
 			final Column column = table.getColumns().get(i);
 			bw.write("			if (" + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "() != null) {" + _N);
-			bw.write("				ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(i++, " + SrcUtils.getCast(column.getType(), " ") + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+			if (SrcUtils.isTimestamp(column.getType())) {
+				bw.write("				ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(i++, new Timestamp(" + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "().getTime()));" + _N);
+			} else {
+				bw.write("				ps." + SrcUtils.getJavaPreparedStatementSetterName(column.getClassName()) + "(i++, " + filterVarName + "." + SrcUtils.getJavaGetterName(column.getName()) + "());" + _N);
+			}
 			bw.write("			}" + _N);
 		}
 		bw.write("		}" + _N);
@@ -312,8 +325,54 @@ public final class DAOMaker {
 		bw.write("		}" + _N);
 		bw.write("	}" + _N);
 		bw.write(_N);
+		bw.write("	public static final Integer selectInt(final Connection conAux, final String query, final Integer n) throws Exception {" + _N);
+		bw.write("		PreparedStatement ps = null;" + _N);
+		bw.write("		ResultSet rs = null;" + _N);
+		bw.write("		Connection con = null;" + _N);
+		bw.write("		try {" + _N);
+		bw.write("			con = conAux == null ? DAO.open() : conAux;" + _N);
+		bw.write("			ps = con.prepareStatement(query);" + _N);
+		bw.write("			if (n != null) {" + _N);
+		bw.write("				ps.setInt(1, n);" + _N);
+		bw.write("			}" + _N);
+		bw.write("			rs = ps.executeQuery();" + _N);
+		bw.write("			if (rs.next()) {" + _N);
+		bw.write("				return rs.getInt(1);" + _N);
+		bw.write("			} else {" + _N);
+		bw.write("				return null;" + _N);
+		bw.write("			}" + _N);
+		bw.write("		} catch (final Exception exc) {" + _N);
+		bw.write("			exc.printStackTrace();" + _N);
+		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
+		bw.write("		} finally {" + _N);
+		bw.write("			DAO.close(rs, ps, conAux == null ? con : null);" + _N);
+		bw.write("		}" + _N);
+		bw.write("	}" + _N);
+		bw.write(_N);
+		bw.write("	public static final void update(final Connection conAux, final String query, final Timestamp ts, final Integer n) throws Exception {" + _N);
+		bw.write("		PreparedStatement ps = null;" + _N);
+		bw.write("		ResultSet rs = null;" + _N);
+		bw.write("		Connection con = null;" + _N);
+		bw.write("		try {" + _N);
+		bw.write("			con = conAux == null ? DAO.open() : conAux;" + _N);
+		bw.write("			ps = con.prepareStatement(query);" + _N);
+		bw.write("			int i = 1;" + _N);
+		bw.write("			if (ts != null) {" + _N);
+		bw.write("				ps.setTimestamp(i++, ts);" + _N);
+		bw.write("			}" + _N);
+		bw.write("			if (n != null) {" + _N);
+		bw.write("				ps.setInt(i++, n);" + _N);
+		bw.write("			}" + _N);
+		bw.write("			ps.executeUpdate();" + _N);
+		bw.write("		} catch (final Exception exc) {" + _N);
+		bw.write("			exc.printStackTrace();" + _N);
+		bw.write("			throw new Exception(_N + query + _N, exc);" + _N);
+		bw.write("		} finally {" + _N);
+		bw.write("			DAO.close(rs, ps, conAux == null ? con : null);" + _N);
+		bw.write("		}" + _N);
+		bw.write("	}" + _N);
+		bw.write(_N);
 		bw.write("}" + _N);
 		bw.close();
 	}
-
 }

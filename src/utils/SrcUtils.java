@@ -155,12 +155,8 @@ public final class SrcUtils {
 		return SrcUtils.getJavaClassName(str, "DAO");
 	}
 
-	public static final String getCast(final int type, final String sep) {
-		if (type == Types.TIME || type == Types.TIMESTAMP || type == Types.DATE) {
-			return "(Date)" + sep;
-		} else {
-			return "";
-		}
+	public static final boolean isTimestamp(final int type) {
+		return type == Types.TIME || type == Types.TIMESTAMP || type == Types.DATE;
 	}
 
 }
