@@ -10,6 +10,7 @@ public final class Maker {
 		goBeans(tables);
 		goDAOs(tables);
 		goEJBs(tables);
+		goTests(tables);
 	}
 
 	private final void goBeans(final List<Table> tables) throws Exception {
@@ -33,6 +34,15 @@ public final class Maker {
 
 	private final void goEJBs(final List<Table> tables) throws Exception {
 		final EJBMaker maker = new EJBMaker();
+		for (Table table : tables) {
+			if (table.getPrimaryKey() != null) {
+				maker.go(table);
+			}
+		}
+	}
+
+	private final void goTests(final List<Table> tables) throws Exception {
+		final TestMaker maker = new TestMaker();
 		for (Table table : tables) {
 			if (table.getPrimaryKey() != null) {
 				maker.go(table);

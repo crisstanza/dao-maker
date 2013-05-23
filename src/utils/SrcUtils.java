@@ -143,12 +143,20 @@ public final class SrcUtils {
 		return defaultPackage + ".ejb";
 	}
 
+	public static final String getDefaultTestsPackage(final String defaultPackage) {
+		return defaultPackage + ".test";
+	}
+
 	public static final String getDefaultDAOsPackage(final String defaultPackage) {
 		return defaultPackage + ".dao";
 	}
 
 	public static final String getDefaultEJBName(final String str) {
 		return SrcUtils.getJavaClassName(str, "Bean");
+	}
+
+	public static final String getDefaultTestName(final String str) {
+		return SrcUtils.getJavaClassName(str, "Test");
 	}
 
 	public static final String getDefaultDAOName(final String str) {
